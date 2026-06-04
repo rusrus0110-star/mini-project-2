@@ -63,4 +63,69 @@ router.post("/", async (req, res) => {
   }
 });
 
+ //PUT /api/cart/:id
+ //Обновить продукт по ID
+ 
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    console.error("PUT /api/cart/:id error:", error);
+
+    res.status(400).json({
+      message: "Error while updating product",
+      error: error.message,
+    });
+  }
+});
+
+ //DELETE /api/cart/:id
+ //Удалить продукт по ID
+ 
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedProduct = await Product.findByIdAndDelete(id);
+
+    if (!deletedProduct) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Product deleted successfully",
+      product: deletedProduct,
+    });
+  } catch (error) {
+    console.error("DELETE /api/cart/:id error:", error);
+
+    res.status(400).json({
+      message: "Error while deleting product",
+      error: error.message,
+    });
+  }
+});
+
 export default router;
